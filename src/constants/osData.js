@@ -40,6 +40,12 @@ export const DEFAULT_GALLERY_IMAGES = [
   "https://picsum.photos/800/600?random=sys_beta",
   "https://picsum.photos/800/600?random=sys_gamma",
   "https://picsum.photos/800/600?random=sys_delta",
+  "https://picsum.photos/800/600?random=sys_alpha",
+  "https://picsum.photos/800/600?random=sys_beta",
+  "https://picsum.photos/800/600?random=sys_gamma",
+  "https://picsum.photos/800/600?random=sys_delta",
+  "https://picsum.photos/800/600?random=sys_alpha",
+  "https://picsum.photos/800/600?random=sys_beta",
 ];
 
 export const AVAILABLE_APPLICATIONS = {
@@ -54,5 +60,5 @@ export const AVAILABLE_APPLICATIONS = {
     icon: "VscPaintcan",
     isMinimized: false,
     zIndex: 10,
-  }
+  },
 };

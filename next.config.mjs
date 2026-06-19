@@ -9,6 +9,9 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: ["lucide-react", "react-icons", "@mui/icons"],
+  },
 };
 
 export default nextConfig;

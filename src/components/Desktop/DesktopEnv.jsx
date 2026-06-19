@@ -14,7 +14,6 @@ import CalculatorApp from "../Applications/CalculatorApp";
 import TicTacToeApp from "../Applications/TicTacToeApp";
 import { PREDEFINED_LOGOS } from "../../constants/osData";
 
-import html2canvas from "html2canvas";
 import { PiImageBrokenBold } from "react-icons/pi";
 
 // Reusable Virtual Scaling Engine for Desktop App Simulations
@@ -66,7 +65,6 @@ export default function DesktopEnv() {
   const { profile, openWindows, openWindow, toggleWindow, focusedWindow } =
     useOSStore();
 
-  const desktopViewportRef = useRef(null);
   const [systemTime, setSystemTime] = useState("");
 
   // Core Real-Time Digital System Ticker Engine
@@ -93,30 +91,6 @@ export default function DesktopEnv() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Screen Capture Logic via html2canvas
-  const captureDesktopEnvironment = async () => {
-    if (!desktopViewportRef.current) return;
-
-    try {
-      // Configuration options ensure CORS images load correctly and background styles are respected
-      const canvas = await html2canvas(desktopViewportRef.current, {
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: null,
-        scale: window.devicePixelRatio || 2, // Capture at higher resolution for crispness
-      });
-
-      // Convert canvas data to binary download sequence
-      const screenshotDataUrl = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a");
-      downloadLink.href = screenshotDataUrl;
-      downloadLink.download = `syscore-capture-${Date.now()}.png`;
-      downloadLink.click();
-    } catch (error) {
-      console.error("System interface compilation capture failure:", error);
-    }
-  };
-
   const targetLogoId =
     typeof profile?.logo === "object" ? profile?.logo?.id : profile?.logo;
   const systemLogoObj = PREDEFINED_LOGOS.find((l) => l.id === targetLogoId);
@@ -125,7 +99,7 @@ export default function DesktopEnv() {
   const desktopIcons = [
     {
       id: "projects",
-      title: "Projects.exe",
+      title: "Projects",
       icon: (
         <img
           src="./icons/projects.png"
@@ -139,7 +113,7 @@ export default function DesktopEnv() {
     },
     {
       id: "gallery",
-      title: "Gallery.exe",
+      title: "Gallery",
       icon: (
         <img
           src="./icons/gallery.png"
@@ -153,7 +127,7 @@ export default function DesktopEnv() {
     },
     {
       id: "achievements",
-      title: "Achievements.exe",
+      title: "Achievements",
       icon: (
         <img
           src="./icons/achievement.png"
@@ -181,7 +155,7 @@ export default function DesktopEnv() {
     },
     {
       id: "calculator",
-      title: "Calculator.exe",
+      title: "Calculator",
       icon: (
         <img
           src="./icons/calculator.png"
@@ -195,7 +169,7 @@ export default function DesktopEnv() {
     },
     {
       id: "tictactoe",
-      title: "TicTacToe.exe",
+      title: "TicTacToe",
       icon: (
         <img
           src="./icons/tic-tac-toe.png"
@@ -307,7 +281,7 @@ export default function DesktopEnv() {
     },
     {
       id: "terminal",
-      title: "Terminal.exe",
+      title: "Terminal",
       icon: (
         <img
           src="./icons/terminal.png"
@@ -321,7 +295,7 @@ export default function DesktopEnv() {
     },
     {
       id: "settings",
-      title: "Settings.exe",
+      title: "Settings",
       icon: (
         <img
           src="./icons/settings.png"
@@ -337,7 +311,7 @@ export default function DesktopEnv() {
 
   const hobbyIcons = (profile?.hobbies || []).map((hobby, index) => ({
     id: `hobby_${index}`,
-    title: `${hobby.name}.exe`,
+    title: `${hobby.name}`,
     icon: (
       <img
         src="./icons/hobby.png"
@@ -356,7 +330,6 @@ export default function DesktopEnv() {
 
   return (
     <div
-      ref={desktopViewportRef}
       className="w-screen h-screen relative select-none flex flex-col justify-between overflow-hidden"
       style={{
         background: profile?.wallpaper || "#0a0a12",
@@ -411,17 +384,17 @@ export default function DesktopEnv() {
 
         {/* Windows Rendering Subsystems */}
         {openWindows["projects"] && (
-          <WindowFrame id="projects" title="Projects.exe">
+          <WindowFrame id="projects" title="Projects">
             <ProjectsApp />
           </WindowFrame>
         )}
         {openWindows["gallery"] && (
-          <WindowFrame id="gallery" title="Gallery.exe">
+          <WindowFrame id="gallery" title="Gallery">
             <GalleryApp />
           </WindowFrame>
         )}
         {openWindows["achievements"] && (
-          <WindowFrame id="achievements" title="Achievements.exe">
+          <WindowFrame id="achievements" title="Achievements">
             <AchievementsApp />
           </WindowFrame>
         )}
@@ -473,7 +446,7 @@ export default function DesktopEnv() {
         )}
 
         {openWindows["documentation"] && (
-          <WindowFrame id="documentation" title="documentation.pdf">
+          <WindowFrame id="documentation" title="Documentation.pdf">
             <iframe
               src="./pdf/documentation.pdf"
               title="Documentation Core Framework Asset"
@@ -484,12 +457,12 @@ export default function DesktopEnv() {
 
         {/* Terminal Subsystem Node */}
         {openWindows["terminal"] && (
-          <WindowFrame id="terminal" title="Terminal.exe">
+          <WindowFrame id="terminal" title="Terminal Syscape">
             <TerminalApp />
           </WindowFrame>
         )}
         {openWindows["settings"] && (
-          <WindowFrame id="settings" title="Settings.exe">
+          <WindowFrame id="settings" title="Settings">
             <SettingsApp />
           </WindowFrame>
         )}
@@ -508,7 +481,7 @@ export default function DesktopEnv() {
           </WindowFrame>
         )}
         {openWindows["calculator"] && (
-          <WindowFrame id="calculator" title="Calculator.sys Core ALU">
+          <WindowFrame id="calculator" title="Calculator Core ALU">
             <CalculatorApp />
           </WindowFrame>
         )}
@@ -532,26 +505,12 @@ export default function DesktopEnv() {
         })}
       </div>
 
-      {/* Watermark & Screenshot Stack System */}
+      {/* Watermark Stack System */}
       <div className="absolute bottom-16 right-4 z-10 flex flex-col items-end gap-2">
-        {/* Screenshot Interactive Button Layer placed strictly at the top */}
-        <button
-          type="button"
-          onClick={captureDesktopEnvironment}
-          className="flex items-center justify-center p-1.5 bg-black/20 backdrop-blur-xs rounded border border-white/5 hover:border-cyber-primary/40 hover:bg-cyber-primary/10 transition-all duration-200 active:scale-95 group shadow-sm"
-          title="Capture Core System Viewport"
-        >
-          <img
-            src="./icons/screenshot.png"
-            alt="Screenshot Icon"
-            className="w-8 h-8 opacity-50 group-hover:opacity-100 group-hover:drop-shadow-[0_0_4px_rgba(0,255,255,0.4)] transition-all duration-200"
-          />
-        </button>
-
         {/* Existing Credits Watermark Div */}
         <div className="font-mono text-[11px] text-white/30 tracking-wider text-right bg-black/20 backdrop-blur-xs px-2.5 py-1 rounded border border-white/5">
           <span>
-            Syscore{" "}
+            Syscape{" "}
             <img
               src="./icon.png"
               alt="Syscore Logo"
@@ -603,7 +562,7 @@ export default function DesktopEnv() {
                 key={winKey}
                 type="button"
                 onClick={() => toggleWindow(winKey, app.title)}
-                title={app.title} // UX Improvement: Native tooltip fallback on icon hover
+                title={app.title}
                 className={`w-9 h-9 rounded flex flex-col items-center justify-center relative transition-all shrink-0 border select-none duration-150 active:scale-95 ${
                   isWindowFocused
                     ? "bg-cyber-primary/10 border-cyber-primary shadow-[0_0_8px_rgba(0,255,255,0.2)] text-cyber-primary"
