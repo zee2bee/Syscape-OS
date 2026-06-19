@@ -2,7 +2,7 @@
 
 > A browser-based WebOS experience that transforms a developer portfolio into an interactive operating system environment.
 
-![Syscape OS Banner](./assets/banner.png)
+![Syscape OS Banner](./app/icon.png)
 
 [![Framework](https://img.shields.io/badge/Framework-Next.js%2014-black?style=for-the-badge&logo=nextdotjs)](https://nextjs.org/)
 [![Language](https://img.shields.io/badge/Language-JavaScript%20ES6+-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
