@@ -73,6 +73,7 @@ export default function DrawingApp() {
   };
 
   const startDrawing = (e) => {
+    e.stopPropagation(); // Prevent mouse/touch event bubbling
     e.preventDefault();
     const { x, y } = getCoordinates(e);
     const canvas = canvasRef.current;
@@ -86,6 +87,7 @@ export default function DrawingApp() {
 
   const draw = (e) => {
     if (!isDrawing) return;
+    e.stopPropagation(); // Prevent mouse/touch event bubbling
     e.preventDefault();
     const { x, y } = getCoordinates(e);
     const canvas = canvasRef.current;
@@ -242,6 +244,7 @@ export default function DrawingApp() {
           onTouchStart={startDrawing}
           onTouchMove={draw}
           onTouchEnd={stopDrawing}
+          onPointerDown={(e) => e.stopPropagation()} // Instantly kills dragging on the parent window frame
           className="bg-white rounded shadow-2xl border border-white/10 cursor-crosshair touch-none max-w-full max-h-full"
         />
       </div>
