@@ -186,72 +186,76 @@ export default function SetupWizard() {
                 <h3 className="text-sm font-bold text-white uppercase tracking-wider">
                   Identity Setup Parameters
                 </h3>
-                <div>
-                  <label className="block text-xs uppercase mb-2 text-cyber-text/80">
-                    User Identity Token (Username)
-                  </label>
-                  <input
-                    type="text"
-                    {...register("username")}
-                    className="w-full p-3 rounded glass-input font-mono"
-                    placeholder="e.g., Operator"
-                  />
-                  {errors.username && (
-                    <p className="text-xs text-cyber-secondary mt-1">
-                      {errors.username.message}
-                    </p>
-                  )}
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                {/* Scroll Containment Layer for Step 0 Fields */}
+                <div className="space-y-4 max-h-[260px] md:max-h-[320px] overflow-y-auto pr-1">
                   <div>
                     <label className="block text-xs uppercase mb-2 text-cyber-text/80">
-                      Select Dynamic Matrix Wallpaper
+                      User Identity Token (Username)
                     </label>
-                    <div className="grid grid-cols-5 gap-2">
-                      {PREDEFINED_WALLPAPERS.map((wall, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => setValue("wallpaper", wall)}
-                          style={{ backgroundImage: wall }}
-                          className={`w-12 h-12 rounded border relative transition-all ${currentWallpaper === wall ? "border-cyber-primary scale-95 ring-1 ring-cyber-primary" : "border-white/10"}`}
-                        >
-                          {currentWallpaper === wall && (
-                            <VscCheck className="absolute inset-0 m-auto text-white drop-shadow-md" />
-                          )}
-                        </button>
-                      ))}
-                    </div>
+                    <input
+                      type="text"
+                      {...register("username")}
+                      className="w-full p-3 rounded glass-input font-mono"
+                      placeholder="e.g., Operator"
+                    />
+                    {errors.username && (
+                      <p className="text-xs text-cyber-secondary mt-1">
+                        {errors.username.message}
+                      </p>
+                    )}
                   </div>
 
-                  <div>
-                    <label className="block text-xs uppercase mb-2 text-cyber-text/80">
-                      Select Core Engine Logo Identity
-                    </label>
-                    <div className="grid grid-cols-5 gap-2">
-                      {PREDEFINED_LOGOS.map((logo) => (
-                        <button
-                          key={logo.id}
-                          type="button"
-                          onClick={() => setValue("logo", logo)}
-                          className={`p-2.5 rounded border flex items-center justify-center text-xs font-mono transition-all relative ${
-                            currentLogo?.id === logo.id
-                              ? "bg-cyber-primary/10 border-cyber-primary text-cyber-primary"
-                              : "bg-white/5 border-white/10 text-white/70"
-                          }`}
-                        >
-                          <img
-                            src={logo.image}
-                            alt={logo.name}
-                            className="w-6 h-6 object-contain"
-                          />
-                          <span className="truncate ml-1">{logo.name}</span>
-                          {currentLogo?.id === logo.id && (
-                            <VscCheck className="absolute text-white drop-shadow-md right-1 top-1 text-[10px]" />
-                          )}
-                        </button>
-                      ))}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div>
+                      <label className="block text-xs uppercase mb-2 text-cyber-text/80">
+                        Select Dynamic Matrix Wallpaper
+                      </label>
+                      <div className="grid grid-cols-5 gap-2">
+                        {PREDEFINED_WALLPAPERS.map((wall, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setValue("wallpaper", wall)}
+                            style={{ backgroundImage: wall }}
+                            className={`w-12 h-12 rounded border relative transition-all ${currentWallpaper === wall ? "border-cyber-primary scale-95 ring-1 ring-cyber-primary" : "border-white/10"}`}
+                          >
+                            {currentWallpaper === wall && (
+                              <VscCheck className="absolute inset-0 m-auto text-white drop-shadow-md" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs uppercase mb-2 text-cyber-text/80">
+                        Select Core Engine Logo Identity
+                      </label>
+                      <div className="grid grid-cols-5 gap-2">
+                        {PREDEFINED_LOGOS.map((logo) => (
+                          <button
+                            key={logo.id}
+                            type="button"
+                            onClick={() => setValue("logo", logo)}
+                            className={`p-2.5 rounded border flex items-center justify-center text-xs font-mono transition-all relative ${
+                              currentLogo?.id === logo.id
+                                ? "bg-cyber-primary/10 border-cyber-primary text-cyber-primary"
+                                : "bg-white/5 border-white/10 text-white/70"
+                            }`}
+                          >
+                            <img
+                              src={logo.image}
+                              alt={logo.name}
+                              className="w-6 h-6 object-contain"
+                            />
+                            <span className="truncate ml-1">{logo.name}</span>
+                            {currentLogo?.id === logo.id && (
+                              <VscCheck className="absolute text-white drop-shadow-md right-1 top-1 text-[10px]" />
+                            )}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -283,52 +287,55 @@ export default function SetupWizard() {
                   )}
                 </div>
 
-                {projectFields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="p-4 bg-black/30 border border-white/5 rounded relative space-y-3"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-mono text-cyber-primary">
-                        PROJECT_NODE_0{index + 1}
-                      </span>
-                      {projectFields.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeProject(index)}
-                          className="text-cyber-secondary hover:text-red-400 transition-colors"
-                        >
-                          <VscTrash size={14} />
-                        </button>
-                      )}
-                    </div>
-                    <div className="grid grid-cols-1 gap-2">
-                      <input
-                        type="text"
-                        {...register(`projects.${index}.title`)}
-                        placeholder="Project File Title"
-                        className="p-2 text-xs rounded glass-input"
-                      />
-                      {errors.projects?.[index]?.title && (
-                        <p className="text-[10px] text-cyber-secondary">
-                          {errors.projects[index].title.message}
-                        </p>
-                      )}
+                {/* Scroll Containment Layer for Step 1 Project Registry Entries */}
+                <div className="space-y-3 max-h-[260px] md:max-h-[320px] overflow-y-auto pr-1">
+                  {projectFields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="p-4 bg-black/30 border border-white/5 rounded relative space-y-3"
+                    >
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-mono text-cyber-primary">
+                          PROJECT_NODE_0{index + 1}
+                        </span>
+                        {projectFields.length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => removeProject(index)}
+                            className="text-cyber-secondary hover:text-red-400 transition-colors"
+                          >
+                            <VscTrash size={14} />
+                          </button>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        <input
+                          type="text"
+                          {...register(`projects.${index}.title`)}
+                          placeholder="Project File Title"
+                          className="p-2 text-xs rounded glass-input"
+                        />
+                        {errors.projects?.[index]?.title && (
+                          <p className="text-[10px] text-cyber-secondary">
+                            {errors.projects[index].title.message}
+                          </p>
+                        )}
 
-                      <textarea
-                        {...register(`projects.${index}.description`)}
-                        placeholder="Deployment overview and framework specifications..."
-                        rows={2}
-                        className="p-2 text-xs rounded glass-input resize-none"
-                      />
-                      {errors.projects?.[index]?.description && (
-                        <p className="text-[10px] text-cyber-secondary">
-                          {errors.projects[index].description.message}
-                        </p>
-                      )}
+                        <textarea
+                          {...register(`projects.${index}.description`)}
+                          placeholder="Deployment overview and framework specifications..."
+                          rows={2}
+                          className="p-2 text-xs rounded glass-input resize-none"
+                        />
+                        {errors.projects?.[index]?.description && (
+                          <p className="text-[10px] text-cyber-secondary">
+                            {errors.projects[index].description.message}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </motion.div>
             )}
 
