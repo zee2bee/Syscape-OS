@@ -139,7 +139,7 @@ npm
 installed on your machine.
 
 1. Clone Repository
-git clone https://github.com/your-username/syscape-os.git
+git clone https://github.com/zee2bee/Syscape-OS.git
 
 cd syscape-os
 2. Install Dependencies
