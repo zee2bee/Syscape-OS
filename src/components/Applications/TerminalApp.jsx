@@ -175,7 +175,7 @@ export default function TerminalApp() {
         })}
       </div>
       <div className="flex items-center gap-2 border-t border-white/10 pt-2 mt-2">
-        <span className="text-cyber-primary font-bold">sysscape_root$</span>
+        <span className="text-cyber-primary font-bold">syscape_root$</span>
         <input
           type="text"
           value={inputVal}

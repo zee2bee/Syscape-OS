@@ -510,7 +510,7 @@ export default function DesktopEnv() {
         {/* Existing Credits Watermark Div */}
         <div className="font-mono text-[11px] text-white/30 tracking-wider text-right bg-black/20 backdrop-blur-xs px-2.5 py-1 rounded border border-white/5">
           <span>
-            Syscape{" "}
+            Syscape{""}
             <img
               src="./icon.png"
               alt="Syscore Logo"
