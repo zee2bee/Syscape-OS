@@ -1,13 +1,20 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { VscTrash, VscSave, VscInbox, VscPaintcan } from "react-icons/vsc";
+import {
+  VscTrash,
+  VscSave,
+  VscInbox,
+  VscPaintcan,
+  VscEdit,
+} from "react-icons/vsc";
 
 export default function DrawingApp() {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [currentColor, setCurrentColor] = useState("#00ffff");
   const [brushSize, setBrushSize] = useState(4);
+  const [activeDrawingId, setActiveDrawingId] = useState(null);
 
   // Gallery states
   const [savedDrawings, setSavedDrawings] = useState(() => {
@@ -29,6 +36,12 @@ export default function DrawingApp() {
     "#7000ff", // Ultraviolet
   ];
 
+  // Helper function to establish solid white background configuration rules
+  const initializeWhiteCanvasBackground = (ctx, width, height) => {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -38,8 +51,7 @@ export default function DrawingApp() {
     ctx.lineJoin = "round";
 
     // Clear the canvas layout cleanly to initial base
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    initializeWhiteCanvasBackground(ctx, canvas.width, canvas.height);
   }, []);
 
   // Sync canvas lines with brush choices
@@ -106,8 +118,27 @@ export default function DrawingApp() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    initializeWhiteCanvasBackground(ctx, canvas.width, canvas.height);
+    setActiveDrawingId(null); // Deselect operational reference targets
+  };
+
+  // Mount targeted snapshot asset back directly into canvas environment loop
+  const mountDrawingToMatrix = (drawing) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    const img = new Image();
+    img.src = drawing.data;
+    img.onload = () => {
+      initializeWhiteCanvasBackground(ctx, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      setActiveDrawingId(drawing.id);
+
+      // Ensure brush configuration overrides map accurately post-load
+      ctx.strokeStyle = currentColor;
+      ctx.lineWidth = brushSize;
+    };
   };
 
   const commitSaveDrawing = () => {
@@ -115,25 +146,49 @@ export default function DrawingApp() {
     if (!canvas) return;
 
     const dataUrl = canvas.toDataURL("image/png");
-    const newDrawing = {
-      id: `draw_${Date.now()}`,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      data: dataUrl,
-    };
+    const currentTimeStamp = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
-    const updated = [newDrawing, ...savedDrawings];
+    let updated;
+
+    if (activeDrawingId) {
+      // Overwrite/Update targeted reference file node metadata parameters
+      updated = savedDrawings.map((draw) =>
+        draw.id === activeDrawingId
+          ? {
+              ...draw,
+              data: dataUrl,
+              timestamp: `${currentTimeStamp} (Edited)`,
+            }
+          : draw,
+      );
+    } else {
+      // Setup parameters for writing absolute new snapshot entry
+      const newDrawing = {
+        id: `draw_${Date.now()}`,
+        timestamp: currentTimeStamp,
+        data: dataUrl,
+      };
+      updated = [newDrawing, ...savedDrawings];
+    }
+
     setSavedDrawings(updated);
     localStorage.setItem("syscape_drawings", JSON.stringify(updated));
     clearCanvasWorkspace();
   };
 
-  const purgeDrawingFromRegistry = (id) => {
+  const purgeDrawingFromRegistry = (id, e) => {
+    e.stopPropagation(); // Instantly block click bubbles from triggering item loading selection triggers
     const updated = savedDrawings.filter((d) => d.id !== id);
     setSavedDrawings(updated);
     localStorage.setItem("syscape_drawings", JSON.stringify(updated));
+
+    // Clear viewport workspace frames entirely if active file targeted for purge
+    if (activeDrawingId === id) {
+      clearCanvasWorkspace();
+    }
   };
 
   return (
@@ -186,9 +241,21 @@ export default function DrawingApp() {
           <button
             type="button"
             onClick={commitSaveDrawing}
-            className="w-full p-2 rounded bg-cyber-primary/20 border border-cyber-primary/50 text-cyber-primary hover:bg-cyber-primary/30 flex items-center justify-center gap-1.5 transition-all font-bold text-[11px]"
+            className={`w-full p-2 rounded transition-all font-bold text-[11px] flex items-center justify-center gap-1.5 ${
+              activeDrawingId
+                ? "bg-amber-500/20 border border-amber-500/50 text-amber-400 hover:bg-amber-500/30"
+                : "bg-cyber-primary/20 border border-cyber-primary/50 text-cyber-primary hover:bg-cyber-primary/30"
+            }`}
           >
-            <VscSave size={13} /> CAPTURE
+            {activeDrawingId ? (
+              <>
+                <VscEdit size={13} /> RE-UPDATE
+              </>
+            ) : (
+              <>
+                <VscSave size={13} /> CAPTURE
+              </>
+            )}
           </button>
         </div>
 
@@ -198,30 +265,44 @@ export default function DrawingApp() {
             <VscInbox size={12} /> Secure Vault
           </span>
           <div className="flex-1 overflow-y-auto space-y-2 pr-0.5">
-            {savedDrawings.map((draw) => (
-              <div
-                key={draw.id}
-                className="group relative rounded border border-white/5 bg-white/5 overflow-hidden aspect-video transition-all hover:border-cyber-primary/30"
-              >
-                <img
-                  src={draw.data}
-                  alt="Saved draw data"
-                  className="w-full h-full object-cover bg-white"
-                />
-                <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-between p-2">
-                  <span className="text-[9px] text-white/60 font-mono">
-                    {draw.timestamp}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => purgeDrawingFromRegistry(draw.id)}
-                    className="p-1 rounded bg-cyber-secondary/20 border border-cyber-secondary/40 text-cyber-secondary hover:bg-cyber-secondary/40 transition-colors"
+            {savedDrawings.map((draw) => {
+              const isActive = activeDrawingId === draw.id;
+              return (
+                <div
+                  key={draw.id}
+                  onClick={() => mountDrawingToMatrix(draw)}
+                  className={`group relative rounded border overflow-hidden aspect-video transition-all cursor-pointer ${
+                    isActive
+                      ? "border-cyber-primary shadow-[0_0_10px_rgba(0,255,255,0.25)] bg-cyber-primary/5"
+                      : "border-white/5 bg-white/5 hover:border-cyber-primary/30"
+                  }`}
+                >
+                  <img
+                    src={draw.data}
+                    alt="Saved draw data"
+                    className="w-full h-full object-cover bg-white"
+                  />
+                  <div
+                    className={`absolute inset-0 bg-black/70 flex items-center justify-between p-2 transition-opacity duration-150 ${
+                      isActive
+                        ? "opacity-100"
+                        : "opacity-0 group-hover:opacity-100"
+                    }`}
                   >
-                    <VscTrash size={12} />
-                  </button>
+                    <span className="text-[9px] text-white/60 font-mono tracking-tighter">
+                      {isActive ? "MOUNTED" : draw.timestamp}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => purgeDrawingFromRegistry(draw.id, e)}
+                      className="p-1 rounded bg-cyber-secondary/20 border border-cyber-secondary/40 text-cyber-secondary hover:bg-cyber-secondary/40 transition-colors"
+                    >
+                      <VscTrash size={12} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {savedDrawings.length === 0 && (
               <div className="text-center text-[9px] text-white/20 pt-4 uppercase tracking-widest leading-relaxed">
                 Vault Unused

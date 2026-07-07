@@ -12,6 +12,7 @@ import NotesApp from "../Applications/NotepadApp";
 import DrawingApp from "../Applications/DrawingApp";
 import CalculatorApp from "../Applications/CalculatorApp";
 import TicTacToeApp from "../Applications/TicTacToeApp";
+import Wallpaper from "../Applications/Wallpaper";
 import { PREDEFINED_LOGOS } from "../../constants/osData";
 
 import { PiImageBrokenBold } from "react-icons/pi";
@@ -307,6 +308,20 @@ export default function DesktopEnv() {
         />
       ),
     },
+    {
+      id: "wallpaper",
+      title: "Wallpaper",
+      icon: (
+        <img
+          src="./icons/wallpaper.png"
+          alt="Wallpaper App"
+          className="w-full h-full object-contain"
+          onError={(e) => {
+            e.target.src = "https://placehold.co/32?text=WAL";
+          }}
+        />
+      ),
+    },
   ];
 
   const hobbyIcons = (profile?.hobbies || []).map((hobby, index) => ({
@@ -489,6 +504,12 @@ export default function DesktopEnv() {
         {openWindows["tictactoe"] && (
           <WindowFrame id="tictactoe" title="TicTacToe Logic Sandbox Engine">
             <TicTacToeApp />
+          </WindowFrame>
+        )}
+
+        {openWindows["wallpaper"] && (
+          <WindowFrame id="wallpaper" title="Wallpaper Selector">
+            <Wallpaper />
           </WindowFrame>
         )}
 
