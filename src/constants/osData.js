@@ -34,7 +34,7 @@ export const PREDEFINED_LOGOS = [
   { id: "step-forward", image: "/logos/step-forward.png" },
 ];
 
-// Reconfigured to utilize the Picsum Photos engine for randomized session assets
+// Utilize the Picsum Photos engine for randomized session assets
 export const DEFAULT_GALLERY_IMAGES = [
   "https://picsum.photos/800/600?random=sys_alpha",
   "https://picsum.photos/800/600?random=sys_beta",
@@ -51,7 +51,7 @@ export const DEFAULT_GALLERY_IMAGES = [
 export const AVAILABLE_APPLICATIONS = {
   notes: {
     title: "CyberNotes Registry",
-    icon: "VscFile", // or pass an icon element/component directly depending on your setup
+    icon: "VscFile",
     isMinimized: false,
     zIndex: 10,
   },

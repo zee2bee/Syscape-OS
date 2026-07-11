@@ -45,7 +45,7 @@ function DesktopSandboxIframe({ src, title }) {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full relative overflow-hidden bg-black/40 rounded"
+      className="relative w-screen h-dvh overflow-hidden select-none bg-black/40 rounded"
     >
       <iframe
         src={src}
@@ -67,8 +67,9 @@ export default function DesktopEnv() {
     useOSStore();
 
   const [systemTime, setSystemTime] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Core Real-Time Digital System Ticker Engine
+  // Core Real-Time Digital System Ticker Engine & Mobile Detection
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -89,12 +90,27 @@ export default function DesktopEnv() {
 
     updateTime();
     const intervalId = setInterval(updateTime, 1000);
+
+    // Check if the current device is mobile to handle PDF rendering
+    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+
     return () => clearInterval(intervalId);
   }, []);
 
   const targetLogoId =
     typeof profile?.logo === "object" ? profile?.logo?.id : profile?.logo;
   const systemLogoObj = PREDEFINED_LOGOS.find((l) => l.id === targetLogoId);
+
+  // Helper function to resolve PDF rendering issues on Mobile Devices
+  const getPdfSrc = (pdfPath) => {
+    if (isMobile) {
+      // Constructs an absolute URL and passes it to Mozilla's PDF.js viewer
+      // This bypasses native mobile download behaviors and renders inline like a desktop browser.
+      const absoluteUrl = window.location.origin + pdfPath.replace(/^\./, "");
+      return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(absoluteUrl)}`;
+    }
+    return pdfPath;
+  };
 
   // Icon assets defined independently of container sizing layout for multi-layer reuse
   const desktopIcons = [
@@ -345,7 +361,7 @@ export default function DesktopEnv() {
 
   return (
     <div
-      className="w-screen h-screen relative select-none flex flex-col justify-between overflow-hidden"
+      className="w-screen h-dvh relative select-none flex flex-col justify-between overflow-hidden"
       style={{
         background: profile?.wallpaper || "#0a0a12",
         backgroundSize: "cover",
@@ -453,7 +469,7 @@ export default function DesktopEnv() {
         {openWindows["quran"] && (
           <WindowFrame id="quran" title="Quran.pdf">
             <iframe
-              src="./pdf/quran.pdf"
+              src={getPdfSrc("./pdf/quran.pdf")}
               title="Quran Core Framework Asset"
               className="w-full h-full min-h-[350px] border-none block rounded bg-white/5"
             />
@@ -463,7 +479,7 @@ export default function DesktopEnv() {
         {openWindows["documentation"] && (
           <WindowFrame id="documentation" title="Documentation.pdf">
             <iframe
-              src="./pdf/documentation.pdf"
+              src={getPdfSrc("./pdf/documentation.pdf")}
               title="Documentation Core Framework Asset"
               className="w-full h-full min-h-[350px] border-none block rounded bg-white/5"
             />
